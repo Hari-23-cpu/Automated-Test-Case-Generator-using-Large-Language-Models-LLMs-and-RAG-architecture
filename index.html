@@ -1,0 +1,68 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Test Case Generator</title>
+    <link rel="stylesheet" href="[https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css](https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css)">
+    <link rel="stylesheet" href="{% static 'index.css' %}">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1><i class="fas fa-microchip fa-icon"></i>AI Test Case Generator</h1>
+            <p>Powered by **Ollama LLM** &amp; Django. Completely Free. No API Key Required.</p>
+        </header>
+        <section class="form-section">
+            <h2><i class="fas fa-keyboard fa-icon"></i>Input and Configuration</h2>
+            <form method="post">
+                {% csrf_token %}
+
+                <label for="{{ form.llm_model.id_for_label }}">Select LLM Model:</label>
+                {{ form.llm_model }}
+
+                <label for="{{ form.user_input.id_for_label }}">Code or Requirements</label>
+                {{ form.user_input }}
+
+                <button type="submit" class="submit-btn">
+                    <i class="fas fa-magic"></i> Generate Test Cases
+                </button>
+            </form>
+        </section>
+        {% if error_message %}
+            <div class="error-message">
+                <i class="fas fa-exclamation-triangle"></i> **Error:** {{ error_message }}
+            </div>
+        {% endif %}
+
+        {% if generated_test_cases %}
+            <section class="result-section">
+                <h2><i class="fas fa-vial fa-icon"></i> Generated Test Cases</h2>
+
+                <table class="test-case-table">
+                    <thead>
+                        <tr>
+                            <th>Test ID</th>
+                            <th>Scenario</th>
+                            <th>Steps</th>
+                            <th>Expected Result</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for case in generated_test_cases %}
+                        <tr>
+                            <td>{{ case.Test_ID|default:forloop.counter }}</td>
+                            <td>{{ case.Scenario|default:"" }}</td>
+                            <td>{{ case.Steps|default:""|linebreaksbr }}</td>
+                            <td>{{ case.Expected_Result|default:"" }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                <p style="margin-top: 20px; color: var(--success-color);"><i class="fas fa-check-circle"></i> Generation Complete. Please review the results above.</p>"
+            </section>
+        {% endif %}
+    </div>
+</body>
+</html>
